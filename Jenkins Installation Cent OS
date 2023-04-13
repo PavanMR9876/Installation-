@@ -1,27 +1,14 @@
-#!/bin/bash
-installdependencies()
-{
-echo “Install script for Jenkins Server on Centos 7”;
-echo “Installing Dependencies”;
-yum install -y epel-release
-firewall-cmd — add-port=8080/tcp — permanent — zone=public
-firewall-cmd — reload
-setenforce 0
-sed -i ‘s/SELINUX=enforcing/SELINUX-disabled/g’ /etc/selinux/config
-yum install -y java-1.8.0-openjdk-devel
-}
-installJenkins()
-{
-echo “Dependencies installed now Jenkins will be installed”
-curl — silent — location http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo | sudo tee /etc/yum.repos.d/jenkins.repo
-rpm — import https://jenkins-ci.org/redhat/jenkins-ci.org.key
-yum -y install jenkins
-echo “starting and enabling jenkins”
-systemctl start jenkins
-systemctl enable jenkins
-}
-installdependencies
-installJenkins
-echo “Jenkins installed now open your browser and navigate to http://your_ip_or_domain:8080"
-cat /var/lib/jenkins/secrets/initialAdminPassword
-echo “copy the initial password to unlock and start accessing jenkins”
+sudo yum update -y
+sudo yum -y install java-11-openjdk java-11-openjdk-devel -y
+systemctl status firewalld
+systemctl start firewalld
+systemctl stop firewalld
+systemctl status firewalld
+curl --silent --location http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo | sudo tee /etc/yum.repos.d/jenkins.repo
+sudo rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+sudo yum install jenkins -y
+sudo systemctl start jenkins
+systemctl status jenkins
+sudo systemctl enable jenkins
+systemctl status jenkins
